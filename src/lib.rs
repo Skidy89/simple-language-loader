@@ -47,15 +47,16 @@ fn parse_lang_data(data: &str) -> HashMap<String, String> {
       cval.push('\n');
       if line.trim().ends_with('"') && !line.trim().ends_with("\\\"") {
         mtl = false;
-        if let Some(key) = ckey.take() {
-          let value = if cval.starts_with('"') {
-            cval[1..cval.len() - 1].trim_end().to_string()
-          } else {
-            cval.trim_end().to_string()
-          };
-          map.insert(key, value);
-          cval.clear();
+        if cval.starts_with('"') {
+          cval = cval[1..cval.len() - 1].trim_end().to_string();
         }
+        if cval.ends_with('"') {
+          cval.pop();
+        }
+        if let Some(key) = ckey.take() {
+          map.insert(key, cval.trim_end().to_string());
+        }
+        cval.clear();
       }
       continue;
     }

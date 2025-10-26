@@ -4,8 +4,8 @@
 /* eslint-disable */
 
 export interface Lang {
-    'test': string;
     'hello': string;
+    'test': string;
 }
 
 export interface Langs {
