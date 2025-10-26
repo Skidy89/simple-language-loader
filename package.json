@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/napi-rs/package-template.git"
+    "url": "git+ssh://git@github.com/skidy89/simple-language-loader.git"
   },
   "license": "MIT",
   "browser": "browser.js",
