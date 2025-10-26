@@ -1,0 +1,7 @@
+# test file
+# This file is used to test the project
+# It contains test cases for various functionalities
+# including language loading and processing.
+# The tests are written using the AVA testing framework.
+
+hello = "hello world"
