@@ -5,13 +5,7 @@ use napi::{
 use napi_derive::napi;
 use once_cell::sync::Lazy;
 use rayon::prelude::*;
-use std::{
-  collections::HashMap,
-  fs,
-  io::{self, BufRead},
-  path::Path,
-  sync::RwLock,
-};
+use std::{collections::HashMap, fs, path::Path, sync::RwLock};
 
 type LangCache = HashMap<String, HashMap<String, String>>;
 static LANG_CACHE: Lazy<RwLock<Option<LangCache>>> = Lazy::new(|| RwLock::new(None));
@@ -26,26 +20,9 @@ pub fn load_lang(env: &Env, path: String) -> Result<Object<'_>> {
     )));
   }
 
-  let file = fs::File::open(&path)
-    .map_err(|e| Error::from_reason(format!("Cannot open file '{}': {}", path.display(), e)))?;
-  let reader = io::BufReader::new(file);
-  let mut map = HashMap::with_capacity(256);
-
-  for line in reader.lines() {
-    let line = line.map_err(|e| Error::from_reason(e.to_string()))?;
-    let line = line.trim();
-    if line.is_empty() || line.starts_with('#') {
-      continue;
-    }
-    if let Some(pos) = line.find('=') {
-      let key = line[..pos].trim();
-      let value = line[pos + 1..].trim().trim_matches('"');
-      if !key.is_empty() {
-        map.insert(key.to_string(), value.to_string());
-      }
-    }
-  }
-
+  let data = fs::read_to_string(path)
+    .map_err(|e| Error::from_reason(format!("Cannot read file '{}': {}", path.display(), e)))?;
+  let map = parse_lang_data(&data);
   let mut js = Object::new(&env)?;
   for (k, v) in map {
     js.set_named_property(&k, env.create_string(&v)?)?;
@@ -53,6 +30,93 @@ pub fn load_lang(env: &Env, path: String) -> Result<Object<'_>> {
   Ok(js)
 }
 
+fn parse_lang_data(data: &str) -> HashMap<String, String> {
+  let mut map = HashMap::new();
+  let mut ckey: Option<String> = None;
+  let mut cval = String::new();
+  let mut mtl = false;
+
+  for line in data.lines() {
+    let line = line.trim_end();
+    if line.is_empty() || line.starts_with('#') {
+      continue;
+    }
+
+    if mtl {
+      cval.push_str(line);
+      cval.push('\n');
+      if line.trim().ends_with('"') && !line.trim().ends_with("\\\"") {
+        mtl = false;
+        if let Some(key) = ckey.take() {
+          let value = if cval.starts_with('"') {
+            cval[1..cval.len() - 1]
+              .trim_end()
+              .to_string()
+          } else {
+            cval.trim_end().to_string()
+          };
+          map.insert(key, value);
+          cval.clear();
+        }
+      }
+      continue;
+    }
+    if let Some(pos) = line.find('=') {
+      let key = line[..pos].trim().to_string();
+      let value = line[pos + 1..].trim();
+
+      if key.is_empty() {
+        continue;
+      }
+      if value.is_empty() {
+        mtl = true;
+        ckey = Some(key);
+        cval.clear();
+        continue;
+      }
+
+      if value.starts_with('"') {
+        if !value.ends_with('"') || value.ends_with("\\\"") {
+          mtl = true;
+          ckey = Some(key);
+          cval = value.to_string();
+          cval.push('\n');
+        } else {
+          let value = value.trim_matches('"').to_string();
+          map.insert(key, value);
+        }
+      } else {
+        map.insert(key, value.to_string());
+      }
+    } else if ckey.is_some() {
+      if line.starts_with('"') {
+        if !line.ends_with('"') || line.ends_with("\\\"") {
+          mtl = true;
+          cval = line.to_string();
+          cval.push('\n');
+        } else {
+          if let Some(key) = ckey.take() {
+            let value = line.trim_matches('"').to_string();
+            map.insert(key, value);
+          }
+        }
+      }
+    }
+  }
+
+  if mtl {
+    if let Some(key) = ckey {
+      let value = if cval.starts_with('"') {
+        cval[1..].trim_end().to_string()
+      } else {
+        cval.trim_end().to_string()
+      };
+      map.insert(key, value);
+    }
+  }
+
+  map
+}
 pub fn validate_path_is_dir(dir: &str) -> Result<&Path> {
   let dirpath = Path::new(dir);
   if !dirpath.is_dir() {
@@ -88,21 +152,7 @@ fn load_lang_dsk(dir: &str) -> Result<LangCache> {
     .filter_map(|path| {
       let name = path.file_stem()?.to_string_lossy().to_string();
       let data = fs::read_to_string(path).ok()?;
-      let mut map = HashMap::with_capacity(256);
-      for line in data.lines() {
-        let line = line.trim();
-        if line.is_empty() || line.starts_with('#') {
-          continue;
-        }
-        if let Some(pos) = line.find('=') {
-          let key = line[..pos].trim();
-          let value = line[pos + 1..].trim().trim_matches('"');
-          if !key.is_empty() {
-            map.insert(key.to_string(), value.to_string());
-          }
-        }
-      }
-      Some((name, map))
+      Some((name, parse_lang_data(&data)))
     })
     .collect();
   Ok(results)

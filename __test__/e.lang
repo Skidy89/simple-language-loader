@@ -5,3 +5,7 @@
 # The tests are written using the AVA testing framework.
 
 hello = "hello world"
+test = "this is 
+a multi-line
+string
+test"

@@ -4,6 +4,7 @@
 /* eslint-disable */
 
 export interface Lang {
+    'test': string;
     'hello': string;
 }
 
