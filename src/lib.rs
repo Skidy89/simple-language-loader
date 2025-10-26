@@ -49,9 +49,7 @@ fn parse_lang_data(data: &str) -> HashMap<String, String> {
         mtl = false;
         if let Some(key) = ckey.take() {
           let value = if cval.starts_with('"') {
-            cval[1..cval.len() - 1]
-              .trim_end()
-              .to_string()
+            cval[1..cval.len() - 1].trim_end().to_string()
           } else {
             cval.trim_end().to_string()
           };
