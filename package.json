@@ -1,6 +1,6 @@
 {
   "name": "@skidy89/ssl.js",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Template project for writing node package with napi-rs",
   "main": "index.js",
   "repository": {
