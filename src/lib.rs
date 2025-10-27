@@ -203,6 +203,19 @@ pub fn generate_typescript_defs(dir: String, output: String) -> Result<()> {
   defs.push_str("export interface Lang {\n");
   if let Some(first_lang) = langs.values().next() {
     for key in first_lang.keys() {
+      // add comments with the value
+      if let Some(value) = first_lang.get(key) {
+        let comment_lines: Vec<&str> = value.lines().collect();
+        if comment_lines.len() == 1 {
+          defs.push_str(&format!("    /** {} */\n", comment_lines[0]));
+        } else {
+          defs.push_str("    /**\n");
+          for line in comment_lines {
+            defs.push_str(&format!("     * {}\n", line));
+          }
+          defs.push_str("     */\n");
+        }
+      }
       defs.push_str(&format!("    '{}': string;\n", key));
     }
   }
