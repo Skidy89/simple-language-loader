@@ -9,3 +9,8 @@ test = "this is
 a multi-line
 string
 test"
+array = [
+"key1",
+"key2",
+"key3"
+]

@@ -4,15 +4,23 @@
 /* eslint-disable */
 
 export interface Lang {
-    /**
-     * this is
-     * a multi-line
-     * string
-     * test
-     */
-    'test': string;
     /** hello world */
     'hello': string;
+    /**
+     * "this is
+     * a multi-line
+     * string
+     * test"
+     */
+    'test': string;
+    /**
+     * [
+     * "key1",
+     * "key2",
+     * "key3"
+     * ]
+     */
+    'array': string;
 }
 
 export interface Langs {

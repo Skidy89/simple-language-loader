@@ -11,3 +11,9 @@ test("generate typescript definitions", (t) => {
     generateTypescriptDefs("__test__/", "__test__/languages.d.ts")
     t.pass()
 })
+
+test("read arrays", (t) => {
+    const e = loadLangs("__test__/") as Langs
+    console.log(e)
+    t.deepEqual(e.e.array, ['key1', 'key2', 'key3'])
+})
