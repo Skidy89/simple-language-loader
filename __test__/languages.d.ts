@@ -2,8 +2,15 @@
 // DO NOT EDIT MANUALLY OR ELSE IT WILL BE OVERWRITTEN
 
 /* eslint-disable */
-
 export interface Lang {
+    /**
+     * [
+     * "key1",
+     * "key2",
+     * "key3"
+     * ]
+     */
+    'array': string[];
     /** hello world */
     'hello': string;
     /**
@@ -13,14 +20,6 @@ export interface Lang {
      * test"
      */
     'test': string;
-    /**
-     * [
-     * "key1",
-     * "key2",
-     * "key3"
-     * ]
-     */
-    'array': string;
 }
 
 export interface Langs {

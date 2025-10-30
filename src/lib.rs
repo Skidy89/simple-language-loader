@@ -209,24 +209,30 @@ pub fn generate_typescript_defs(dir: String, output: String) -> Result<()> {
   defs.push_str("// DO NOT EDIT MANUALLY OR ELSE IT WILL BE OVERWRITTEN\n\n");
   defs.push_str("/* eslint-disable */\n");
   defs.push_str("export interface Lang {\n");
+
   if let Some(first_lang) = langs.values().next() {
     for key in first_lang.keys() {
-      // add comments with the value
       if let Some(value) = first_lang.get(key) {
-        let comment_lines: Vec<&str> = value.lines().collect();
-        if comment_lines.len() == 1 {
-          defs.push_str(&format!("    /** {} */\n", comment_lines[0]));
+        let trimmed = value.trim();
+        let cm: Vec<&str> = value.lines().collect();
+        if cm.len() == 1 {
+          defs.push_str(&format!("    /** {} */\n", cm[0]));
         } else {
           defs.push_str("    /**\n");
-          for line in comment_lines {
+          for line in cm {
             defs.push_str(&format!("     * {}\n", line));
           }
           defs.push_str("     */\n");
         }
+        if trimmed.starts_with('[') && trimmed.ends_with(']') {
+          defs.push_str(&format!("    '{}': string[];\n", key));
+        } else {
+          defs.push_str(&format!("    '{}': string;\n", key));
+        }
       }
-      defs.push_str(&format!("    '{}': string;\n", key));
     }
   }
+
   defs.push_str("}\n\n");
   defs.push_str("export interface Langs {\n");
   for lang in langs.keys() {
