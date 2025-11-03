@@ -14,3 +14,4 @@ array = [
 "key2",
 "key3"
 ]
+test_placeholder = "This is a {placeholder} test."

@@ -4,6 +4,17 @@
 /* eslint-disable */
 export interface Lang {
     /**
+     * "this is
+     * a multi-line
+     * string
+     * test"
+     */
+    'test': string;
+    /** hello world */
+    'hello': string;
+    /** This is a {placeholder} test. */
+    'test_placeholder': string;
+    /**
      * [
      * "key1",
      * "key2",
@@ -11,15 +22,6 @@ export interface Lang {
      * ]
      */
     'array': string[];
-    /** hello world */
-    'hello': string;
-    /**
-     * "this is
-     * a multi-line
-     * string
-     * test"
-     */
-    'test': string;
 }
 
 export interface Langs {
