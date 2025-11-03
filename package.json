@@ -1,6 +1,6 @@
 {
   "name": "@skidy89/ssl.js",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "simple language loader - A high-performance language loader for internationalization (i18n) using Rust and N-API, supporting multiline strings, arrays, comments, and caching.",
   "main": "index.js",
   "repository": {
