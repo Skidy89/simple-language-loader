@@ -7,7 +7,7 @@ test('load languages', (t) => {
     t.is(e.e.hello, 'hello world')
 })
 test("generate typescript definitions", (t) => {
-    generateTypescriptDefs("__test__/", "__test__/languages.d.ts")
+    generateTypescriptDefs("__test__/", "__test__/languages.d.ts", true)
     t.pass()
 })
 

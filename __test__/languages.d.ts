@@ -13,7 +13,7 @@ export interface Lang {
     /** hello world */
     'hello': string;
     /** This is a {placeholder} test. */
-    'test_placeholder': string;
+    'test_placeholder': (args: { placeholder: string }) => string;
     /**
      * [
      * "key1",
