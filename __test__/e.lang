@@ -14,4 +14,10 @@ array = [
 "key2",
 "key3"
 ]
+# it should not generate placeholder for array types
 test_placeholder = "This is a {placeholder} test."
+tested_array = [
+"value1",
+"value2 with {placeholder}",
+"value3",
+]

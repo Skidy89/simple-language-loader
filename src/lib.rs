@@ -238,7 +238,7 @@ pub fn generate_typescript_defs(
             }
           }
         }
-        if !placeholders.is_empty() && should_gen_placeholder {
+        if !placeholders.is_empty() && should_gen_placeholder && !trimmed.starts_with('[') {
           defs.push_str(&format!("    '{}': (args: {{ ", key));
           for (i, p) in placeholders.iter().enumerate() {
             if i > 0 {

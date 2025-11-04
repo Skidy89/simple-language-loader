@@ -3,6 +3,18 @@
 
 /* eslint-disable */
 export interface Lang {
+    /** This is a {placeholder} test. */
+    'test_placeholder': (args: { placeholder: string }) => string;
+    /**
+     * [
+     * "value1",
+     * "value2 with {placeholder}",
+     * "value3",
+     * ]
+     */
+    'tested_array': string[];
+    /** hello world */
+    'hello': string;
     /**
      * "this is
      * a multi-line
@@ -10,10 +22,6 @@ export interface Lang {
      * test"
      */
     'test': string;
-    /** hello world */
-    'hello': string;
-    /** This is a {placeholder} test. */
-    'test_placeholder': (args: { placeholder: string }) => string;
     /**
      * [
      * "key1",
