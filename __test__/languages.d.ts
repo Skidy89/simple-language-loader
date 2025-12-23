@@ -10,18 +10,6 @@ export interface Lang {
      * test
      */
     'test': string;
-    /** hello world */
-    'hello': string;
-    /**
-     * [
-     * "key1",
-     * "key2",
-     * "key3"
-     * ]
-     */
-    'array': string[];
-    /** This is a {placeholder} test. */
-    'test_placeholder': (args: { placeholder: string }) => string;
     /**
      * [
      * "value1",
@@ -30,6 +18,18 @@ export interface Lang {
      * ]
      */
     'tested_array': string[];
+    /** hello world */
+    'hello': string;
+    /** This is a {placeholder} test. */
+    'test_placeholder': (args: { placeholder: string }) => string;
+    /**
+     * [
+     * "key1",
+     * "key2",
+     * "key3"
+     * ]
+     */
+    'array': string[];
 }
 
 export interface Langs {

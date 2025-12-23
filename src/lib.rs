@@ -28,11 +28,83 @@ pub fn load_cached_langs<'a>(env: &'a Env, dir: String) -> Result<Object<'a>> {
   to_js(env, cache::get().unwrap())
 }
 
+#[napi]
+pub fn load_custom_language<'a>(
+  env: &'a Env,
+  dir: String,
+  custom_dir: String,
+) -> Result<Object<'a>> {
+  let mut langs = load_lang_dir(Path::new(&dir))?;
+  let custom_langs = load_lang_dir(Path::new(&custom_dir))?;
+
+  for (lang, kv_map) in custom_langs {
+    // Extract metadata
+    let engine = kv_map.get("meta.engine").map(|s| s.to_string());
+
+    if let Some(engine_name) = &engine {
+      // Validate that custom language has the same keys as the engine
+      if let Some(base_lang) = langs.get(engine_name) {
+        let base_keys: Vec<&String> = base_lang.keys().collect();
+        let custom_keys: Vec<&String> = kv_map.keys().filter(|k| !k.starts_with("meta.")).collect();
+
+        // Check if all base keys exist in custom language
+        for base_key in &base_keys {
+          if !kv_map.contains_key(*base_key) {
+            return Err(Error::from_reason(format!(
+              "Custom language '{}' is missing required key '{}' from engine '{}'",
+              lang, base_key, engine_name
+            )));
+          }
+        }
+
+        // Check if custom has extra keys (excluding meta.*)
+        for custom_key in &custom_keys {
+          if !base_lang.contains_key(*custom_key) {
+            return Err(Error::from_reason(format!(
+              "Custom language '{}' has extra key '{}' not present in engine '{}'",
+              lang, custom_key, engine_name
+            )));
+          }
+        }
+      } else {
+        return Err(Error::from_reason(format!(
+          "Engine '{}' specified in custom language '{}' not found",
+          engine_name, lang
+        )));
+      }
+    }
+
+    langs.insert(lang, kv_map);
+  }
+
+  to_js(env, &langs)
+}
+
 fn to_js<'a>(env: &'a Env, langs: &LangCache) -> Result<Object<'a>> {
   let mut root = Object::new(env)?;
   for (lang, kv_map) in langs {
     let mut obj = Object::new(env)?;
+    let mut meta_obj = Object::new(env)?;
+    let mut has_meta = false;
+
     for (k, v) in kv_map {
+      // Handle metadata keys
+      if k.starts_with("meta.") {
+        let meta_key = &k[5..]; // Remove "meta." prefix
+        let trimmed = v.trim();
+        if trimmed.starts_with('"') && trimmed.ends_with('"') {
+          let val = trimmed
+            .trim_matches('"')
+            .replace("\\n", "\n")
+            .replace("\\\"", "\"");
+          meta_obj.set_named_property(meta_key, env.create_string(&val)?)?;
+        } else {
+          meta_obj.set_named_property(meta_key, env.create_string(v)?)?;
+        }
+        has_meta = true;
+        continue;
+      }
+
       let trimmed = v.trim();
       if trimmed.starts_with('[') && trimmed.ends_with(']') {
         let inr = &trimmed[1..trimmed.len() - 1];
@@ -65,6 +137,12 @@ fn to_js<'a>(env: &'a Env, langs: &LangCache) -> Result<Object<'a>> {
       }
       obj.set_named_property(k, env.create_string(v)?)?;
     }
+
+    // Add meta object if it has any properties
+    if has_meta {
+      obj.set_named_property("meta", meta_obj)?;
+    }
+
     root.set_named_property(lang, obj)?;
   }
   Ok(root)

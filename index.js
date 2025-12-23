@@ -575,3 +575,4 @@ module.exports = nativeBinding
 module.exports.generateTypescriptDefs = nativeBinding.generateTypescriptDefs
 module.exports.loadCachedLangs = nativeBinding.loadCachedLangs
 module.exports.loadLangs = nativeBinding.loadLangs
+module.exports.loadCustomLanguage = nativeBinding.loadCustomLanguage

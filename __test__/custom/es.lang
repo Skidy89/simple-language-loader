@@ -1,0 +1,23 @@
+# Custom Spanish language file
+# This file can be hot-reloaded without rebuilding
+
+meta.engine = "e"
+meta.version = "1.0.0"
+meta.description = "Spanish translation"
+meta.authors = "SSL Team"
+
+hello = "hola mundo"
+test = "esta es una
+cadena multi-línea
+de prueba"
+array = [
+"elemento1",
+"elemento2",
+"elemento3"
+]
+test_placeholder = "Esto es una prueba con {placeholder}."
+tested_array = [
+"valor1",
+"valor2 con {placeholder}",
+"valor3",
+]

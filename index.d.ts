@@ -5,3 +5,5 @@ export declare function generateTypescriptDefs(dir: string, output: string, genP
 export declare function loadCachedLangs(dir: string): object
 
 export declare function loadLangs(dir: string): object
+
+export declare function loadCustomLanguage(dir: string, customDir: string): object
