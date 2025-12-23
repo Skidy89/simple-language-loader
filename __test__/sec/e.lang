@@ -1,0 +1,23 @@
+# test file
+# This file is used to test the project
+# It contains test cases for various functionalities
+# including language loading and processing.
+# The tests are written using the AVA testing framework.
+
+hello = "hello world"
+test = "this is 
+a multi-line
+string
+test"
+array = [
+"key1",
+"key2",
+"key3"
+]
+# it should not generate placeholder for array types
+test_placeholder = "This is a {placeholder} test."
+tested_array = [
+"value1",
+"value2 with {placeholder}",
+"value3",
+]
