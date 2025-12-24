@@ -4,6 +4,8 @@ export declare function clearLanguage(language: string): boolean
 
 export declare function generateTypescriptDefs(dir: string, output: string, genPlaceholder?: boolean | undefined | null): void
 
+export declare function getLanguage(language: string): object | null
+
 export declare function getLanguages(): object
 
 export interface JsLangError {

@@ -68,6 +68,22 @@ pub fn get_languages<'a>(env: &'a Env) -> Result<Object<'a>> {
 }
 
 #[napi]
+pub fn get_language<'a>(env: &'a Env, language: String) -> Result<Option<Object<'a>>> {
+  let cached = cache::get().ok_or_else(|| Error::from_reason("No cached languages found"))?;
+
+  let lang_map = match cached.get(&language) {
+    Some(l) => l,
+    None => return Ok(None),
+  };
+
+  let mut single = LangCache::with_capacity(1);
+  single.insert(language, lang_map.clone());
+
+  let obj = to_js(env, &single)?;
+  Ok(Some(obj))
+}
+
+#[napi]
 pub fn load_custom_language<'a>(dir: String, custom_dir: String) -> Result<Vec<JsLangError>> {
   let base_langs = load_lang_dir(Path::new(&dir))?;
   let custom_langs = load_lang_dir(Path::new(&custom_dir))?;

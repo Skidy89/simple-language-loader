@@ -5,6 +5,7 @@
     "bench": "ava benchmark.spec.ts --verbose"
   },
   "devDependencies": {
-    "ava": "^6.0.0"
+    "ava": "^6.0.0",
+    "tsx": "^4.21.0"
   }
 }

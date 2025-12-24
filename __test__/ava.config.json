@@ -1,5 +1,11 @@
 {
   "timeout": "2m",
   "serial": true,
-  "verbose": true
+  "verbose": true,
+  "extensions": {
+    "ts": "module"
+  },
+  "nodeArguments": [
+    "--import=tsx"
+  ]
 }
