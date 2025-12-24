@@ -4,8 +4,17 @@ export declare function generateTypescriptDefs(dir: string, output: string, genP
 
 export declare function getLanguages(): object
 
+export interface JsLangError {
+  code: string
+  severity: string
+  lang: string
+  engine?: string
+  key?: string
+  message: string
+}
+
 export declare function loadCachedLangs(dir: string): object
 
-export declare function loadCustomLanguage(dir: string, customDir: string): boolean
+export declare function loadCustomLanguage(dir: string, customDir: string): Array<JsLangError>
 
 export declare function loadLangs(dir: string): object
