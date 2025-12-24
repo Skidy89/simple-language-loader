@@ -27,6 +27,15 @@ pub struct LangError {
   pub message: String,
 }
 
+#[napi(object)]
+pub struct JsLangError {
+  pub code: String,
+  pub severity: String,
+  pub lang: String,
+  pub engine: Option<String>,
+  pub key: Option<String>,
+  pub message: String,
+}
 use crate::{
   loader::{load_lang_dir, LangCache},
   parser::push_error,
@@ -59,7 +68,7 @@ pub fn get_languages<'a>(env: &'a Env) -> Result<Object<'a>> {
 }
 
 #[napi]
-pub fn load_custom_language<'a>(dir: String, custom_dir: String) -> Result<bool> {
+pub fn load_custom_language<'a>(dir: String, custom_dir: String) -> Result<Vec<JsLangError>> {
   let base_langs = load_lang_dir(Path::new(&dir))?;
   let custom_langs = load_lang_dir(Path::new(&custom_dir))?;
 
@@ -127,12 +136,31 @@ pub fn load_custom_language<'a>(dir: String, custom_dir: String) -> Result<bool>
   }
 
   if errors.iter().any(|e| matches!(e.severity, Severity::Fatal)) {
-    return Err(Error::from_reason("Fatal language errors detected"));
+    return Err(Error::from_reason(
+      "Fatal errors occurred while loading custom languages",
+    ));
   }
 
   cache::clear();
   cache::set(merged);
-  Ok(true)
+  Ok(
+    errors
+      .into_iter()
+      .map(|e| JsLangError {
+        code: e.code,
+        severity: match e.severity {
+          Severity::Fatal => "Fatal".to_string(),
+          Severity::Error => "Error".to_string(),
+          Severity::Warning => "Warning".to_string(),
+          Severity::Info => "Info".to_string(),
+        },
+        lang: e.lang,
+        engine: e.engine,
+        key: e.key,
+        message: e.message,
+      })
+      .collect(),
+  )
 }
 
 fn to_js<'a>(env: &'a Env, langs: &LangCache) -> Result<Object<'a>> {
