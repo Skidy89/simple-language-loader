@@ -2,8 +2,10 @@
 /* eslint-disable */
 export declare function generateTypescriptDefs(dir: string, output: string, genPlaceholder?: boolean | undefined | null): void
 
+export declare function getLanguages(): object
+
 export declare function loadCachedLangs(dir: string): object
 
-export declare function loadCustomLanguage(dir: string, customDir: string): object
+export declare function loadCustomLanguage(dir: string, customDir: string): boolean
 
 export declare function loadLangs(dir: string): object

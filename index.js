@@ -573,6 +573,7 @@ if (!nativeBinding) {
 
 module.exports = nativeBinding
 module.exports.generateTypescriptDefs = nativeBinding.generateTypescriptDefs
+module.exports.getLanguages = nativeBinding.getLanguages
 module.exports.loadCachedLangs = nativeBinding.loadCachedLangs
 module.exports.loadCustomLanguage = nativeBinding.loadCustomLanguage
 module.exports.loadLangs = nativeBinding.loadLangs

@@ -1,12 +1,20 @@
-use crate::loader::LangCache;
-use once_cell::sync::OnceCell;
+use once_cell::sync::Lazy;
+use std::{collections::HashMap, sync::RwLock};
 
-static LANG_CACHE: OnceCell<LangCache> = OnceCell::new();
+use crate::parser::LangMap;
 
-pub fn get() -> Option<&'static LangCache> {
-  LANG_CACHE.get()
+pub type LangCache = HashMap<String, LangMap>;
+
+pub static LANG_CACHE: Lazy<RwLock<Option<LangCache>>> = Lazy::new(|| RwLock::new(None));
+
+pub fn get() -> Option<LangCache> {
+  LANG_CACHE.read().unwrap().as_ref().cloned()
 }
 
-pub fn set(langs: LangCache) {
-  let _ = LANG_CACHE.set(langs);
+pub fn set(data: LangCache) {
+  *LANG_CACHE.write().unwrap() = Some(data);
+}
+
+pub fn clear() {
+  *LANG_CACHE.write().unwrap() = None;
 }

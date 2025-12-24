@@ -1,0 +1,5 @@
+{
+  "timeout": "2m",
+  "serial": true,
+  "verbose": true
+}

@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use crate::{LangError, Severity};
+
 pub type LangMap = HashMap<String, String>;
 
 pub fn parse_lang_data(data: &str) -> LangMap {
@@ -80,4 +82,23 @@ fn normalize_value(v: &str) -> String {
   } else {
     t.to_string()
   }
+}
+
+pub fn push_error(
+  errors: &mut Vec<LangError>,
+  code: &'static str,
+  severity: Severity,
+  lang: &str,
+  engine: Option<&str>,
+  key: Option<&str>,
+  message: String,
+) {
+  errors.push(LangError {
+    code: code.to_string(),
+    severity,
+    lang: lang.to_string(),
+    engine: engine.map(|s| s.to_string()),
+    key: key.map(|s| s.to_string()),
+    message,
+  });
 }

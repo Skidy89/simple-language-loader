@@ -1,3 +1,10 @@
 {
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "test": "ava",
+    "bench": "ava benchmark.spec.ts --verbose"
+  },
+  "devDependencies": {
+    "ava": "^6.0.0"
+  }
 }
