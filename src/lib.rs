@@ -163,6 +163,16 @@ pub fn load_custom_language<'a>(dir: String, custom_dir: String) -> Result<Vec<J
   )
 }
 
+#[napi]
+pub fn clear_language(language: String) -> Result<bool> {
+  if let Some(mut cached) = cache::get() {
+    let removed = cached.remove(&language).is_some();
+    cache::set(cached);
+    return Ok(removed);
+  }
+  Ok(false)
+}
+
 fn to_js<'a>(env: &'a Env, langs: &LangCache) -> Result<Object<'a>> {
   let mut root = Object::new(env)?;
   for (lang, kv_map) in langs {
